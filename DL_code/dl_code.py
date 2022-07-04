@@ -68,7 +68,7 @@ To put the spectra on the same scale.
 
 # Reading an example set of spectra records. 10 Spectra.
 temperature_control = []        
-spec = pd.read_csv('spec_1p2_control.txt', header=None, sep='\t', comment='#')
+spec = pd.read_csv('spec_1p2_control.txt', header=None, sep='\t', comment='#', encoding='latin')
 temperature_control.append(spec)
 
 # Define number of points to interpolate and number of spectra in that set
@@ -170,7 +170,7 @@ In this work we used models from Sklearn Python package and artificial neural ne
 
 ## Fully Connected Artificial Neural Network (FC-ANN)
 """
-
+#%%
 data_set_processed = pd.read_csv('data_set_processed.csv', index_col=False)
 data_set_processed = data_set_processed.drop('Unnamed: 0', axis=1)
 
@@ -207,7 +207,6 @@ from sklearn.preprocessing import MinMaxScaler
 scaler = MinMaxScaler()
 y_s = scaler.fit_transform(y)
 
-y_s
 
 # Function that will be used later that calculates the average predicted temperatures with respect to target values.
 def ave_temp(pred_traininv, train_inv, pred_testinv, test_inv):
@@ -243,8 +242,6 @@ from sklearn.model_selection import train_test_split
 rnd_seed = 97
 X_train, X_test, y_train, y_test = train_test_split(X, y_s, shuffle=True, test_size=0.2,
                                                     random_state=rnd_seed, stratify=y_s)
-
-X_train
 
 """## Artificial Neural Network for Regression (FC-ANN). Ref. 1 and 2
 
@@ -317,6 +314,7 @@ print('Pearson correlation coefficient Train', corr_coeff_train)
 corr_coeff_test = np.corrcoef(test_inv[:,0], pred_testinv[:,0])[0,1]
 print('Pearson correlation coefficient Test', corr_coeff_test)
 
+#%%
 """## Artificial Neural Network for Regression (1D-CNN). Ref. 2
 
 ### Here, we demonstarte how to build an artificial neural network in Keras, specifically, 1D-CNN. Here, we take the final architecture as we used in the manuscript. Note: Different run will give slightly different results due to ramdomness of the ANN weights initialization and other randomness involved in the machine learning pipeline.
@@ -349,11 +347,11 @@ plt.ylabel('X', fontsize=20)
 plt.yticks(ticks=[], labels=[])
 plt.xticks(ticks=[], labels=[])
 plt.plot(range(0,125), 0.35 * np.ones(125) ,color='purple')
-ax.annotate(s='First Region',xy=(50, 0.45), xytext=(0, 0.4))
+ax.annotate(text='First Region',xy=(50, 0.45), xytext=(0, 0.4))
 plt.plot(range(175,275), 1.0 * np.ones(100) ,color='purple')
-ax.annotate(s='Second Region',xy=(175, 1.05), xytext=(175, 1.05))
+ax.annotate(text='Second Region',xy=(175, 1.05), xytext=(175, 1.05))
 plt.plot(range(625,1000), 0.4 * np.ones(375) ,color='purple')
-ax.annotate(s='Third Region',xy=(625, 0.45), xytext=(625, 0.45))
+ax.annotate(text='Third Region',xy=(625, 0.45), xytext=(625, 0.45))
 plt.show()
 
 X_1 = X[:,0:125]
