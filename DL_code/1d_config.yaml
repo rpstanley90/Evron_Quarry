@@ -1,0 +1,48 @@
+# Runtime params
+#===================================
+name: 'data_set_processed' #User-define name of configuration file
+dataset_name: 'data_set_processed' #name of folder holding initial training set
+num_features: 1000 #Dimensionality of input 
+num_labels: 1 #Dimensionality of output
+log_thinning: 5 #Print training/validation metric every nth epoch
+verbose: True #Print training information
+verbose_plots: True #Make all plots each cycle. Set to 'False' to only print final result
+uncertainty_method: 'ensemble' # 'mc_dropout' or 'ensemble'
+explore_factor: 1.0 #Volume
+exploit_factor: 1.0 #
+adaptive_sample: False
+adaptive_method: 'placeholder'
+device: 'cuda:0' #Device for training NN model. Set to 'cpu' for only using CPU or 'cuda:#' where # is GPU number 0-indexed
+
+# ANN parameters
+model_architecture: 'standard_mlp' # 'standard_mlp' 'split_mlp'
+loss_metric: 'mse' #NN loss function. 'mse' or 'cfd_hau'
+activation_func: 'smelu' #Nonlinear activation function for NN
+batches_per_epoch: 64 #Number of training batches per epoch. Used to compute batch size
+batch_size: 24
+optimizer: 'RMSProp' #Optimizer function: adamW
+learning_rate: 0.001 #Weight update learning rate
+
+#Network dimensions
+#format - [input size, hidden layer(s) size(s), output size]
+network_size: [1000, 800, 1] #if poly is 2, then input is 3 for 1-D and 6 for 2-D
+
+#Ensemble-specific options, if used
+dropout: 0.0 #Dropout fraction. Set to 0 for no dropout. Set to 0.1 for 10% dropout, etc.
+weight_decay: 0.0001 #Weight decay regularization term
+num_bootstraps: 20 #Number of models to train for each ensemble
+num_bootstraps_extra: 2 #Number of extra models to train, will pick best performing num_bootstraps in case some get stuck at poor optima
+min_tau: 1
+max_tau: 100
+num_taus: 2000
+
+#Training parameters
+# maximum number of epochs allowed (if early stopping criteria not met)
+train_epochs: 250
+warmup_epochs: 700 #number of epochs to train using mse before switching to cfd_hau if "switch" loss_metric is used
+
+# Number of consequetive training iterations to allow without decreasing the val_loss by at least min_delta
+early_stopping: True
+patience: 500
+scheduler_patience: 100
+min_delta: 0.00001
