@@ -15,12 +15,12 @@ adaptive_method: 'placeholder'
 device: 'cuda:0' #Device for training NN model. Set to 'cpu' for only using CPU or 'cuda:#' where # is GPU number 0-indexed
 
 # ANN parameters
-model_architecture: 'standard_mlp' # 'standard_mlp' 'split_mlp'
+model_architecture: '1dcnn' # 'standard_mlp' 'split_mlp'
 loss_metric: 'mse' #NN loss function. 'mse' or 'cfd_hau'
 activation_func: 'smelu' #Nonlinear activation function for NN
 batches_per_epoch: 64 #Number of training batches per epoch. Used to compute batch size
-batch_size: 24
-optimizer: 'RMSProp' #Optimizer function: adamW
+batch_size: 32
+optimizer: 'AdamW' #Optimizer function: adamW
 learning_rate: 0.001 #Weight update learning rate
 
 #Network dimensions
@@ -38,11 +38,11 @@ num_taus: 2000
 
 #Training parameters
 # maximum number of epochs allowed (if early stopping criteria not met)
-train_epochs: 250
+train_epochs: 1000
 warmup_epochs: 700 #number of epochs to train using mse before switching to cfd_hau if "switch" loss_metric is used
 
 # Number of consequetive training iterations to allow without decreasing the val_loss by at least min_delta
 early_stopping: True
-patience: 500
-scheduler_patience: 100
-min_delta: 0.00001
+patience: 100
+scheduler_patience: 25
+min_delta: 0.0001

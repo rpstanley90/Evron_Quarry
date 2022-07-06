@@ -11,13 +11,55 @@ from smelu import SmeLU
 class Simple1DCNN(torch.nn.Module):
     def __init__(self):
         super(Simple1DCNN, self).__init__()
-        self.layer1 = torch.nn.Conv1d(in_channels=1000, out_channels=256, kernel_size=32, stride=1)
-        self.act1 = torch.nn.ReLU()
-        self.layer2 = torch.nn.Conv1d(in_channels=256, out_channels=4, kernel_size=1)
+        self.layer1 = torch.nn.Conv1d(in_channels=1, out_channels=16, kernel_size=41, stride=1)
+        self.maxp1 = torch.nn.MaxPool1d(kernel_size=2,stride=2)
+        
+        self.layer2 = torch.nn.Conv1d(in_channels=16, out_channels=16, kernel_size=41, stride=1, dilation=2)
+        self.maxp2 = torch.nn.MaxPool1d(kernel_size=2,stride=2)
+        
+        self.layer3 = torch.nn.Conv1d(in_channels=16, out_channels=32, kernel_size=41, stride=1, dilation=3)
+        self.maxp3 = torch.nn.MaxPool1d(kernel_size=2,stride=2)
+        
+        self.flatten1 = torch.nn.Flatten()
+        
+        self.linear1 = torch.nn.Linear(1280+10, 256)
+        self.linear2 = torch.nn.Linear(256, 256)
+        self.linear3 = torch.nn.Linear(256, 1)
+        
+        self.embedding = nn.Embedding(10, 10)
+        
+        self.smelu = SmeLU(beta=0.1)
+
+
+        
     def forward(self, x):
+        
+        x, sites = torch.split(x, x.shape[-1]-10, dim=2)
+        
         x = self.layer1(x)
-        x = self.act1(x)
-        out = self.layer2(x)
+        x = self.smelu(x)
+        x = self.maxp1(x)
+
+        x = self.layer2(x)
+        x = self.smelu(x)
+        x = self.maxp2(x)
+        
+        x = self.layer3(x)
+        x = self.smelu(x)
+        x = self.maxp3(x)
+        
+        
+        x=self.flatten1(x)
+        
+        #sites = self.embedding(sites)
+        sites=self.flatten1(sites)
+
+        x = torch.cat((x,sites),dim=1)
+
+
+        x = self.smelu(self.linear1(x))
+        x = self.smelu(self.linear2(x))
+        out = self.linear3(x)
 
         return out
 

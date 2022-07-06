@@ -18,18 +18,17 @@ class Conductor:
         if self.config['model_architecture'] == 'split_mlp':
             self.model = models.Split_MLP(network_size=self.config['network_size'], dropout_rate=self.config['dropout'],
                                    dropout_type='bernoulli', activation_func=self.config['activation_func'])
-            self.model.to(self.config['device']
-                          if torch.cuda.is_available() else 'cpu')
-            self.optimizer = optim.AdamW(self.model.parameters(
-            ), weight_decay=self.config['weight_decay'], lr=self.config['learning_rate'])
         elif self.config['model_architecture'] == 'standard_mlp':
             self.model = models.Standard_MLP(network_size=self.config['network_size'], dropout_rate=self.config['dropout'],
                                       dropout_type='bernoulli', activation_func=self.config['activation_func'])
-            self.model.to(self.config['device']
-                          if torch.cuda.is_available() else 'cpu')
-            self.optimizer = optim.AdamW(self.model.parameters(
-            ), weight_decay=self.config['weight_decay'], lr=self.config['learning_rate'])
-            #self.optimizer = optim.LBFGS(self.model.parameters(), lr=self.config['learning_rate'])
+        elif self.config['model_architecture'] == '1dcnn':
+            self.model=models.Simple1DCNN()
+
+
+        self.model.to(self.config['device']
+                      if torch.cuda.is_available() else 'cpu')
+        self.optimizer = optim.AdamW(self.model.parameters(
+        ), weight_decay=self.config['weight_decay'], lr=self.config['learning_rate'])
 
         self.model.min_training_loss = float("Inf")
         self.model.min_validation_loss = float("Inf")
